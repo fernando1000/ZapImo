@@ -95,7 +95,21 @@ public class JsonUtil {
 					
 					if(field.getType() == String.class){
 						
-						field.set(objectInstance, jSONObject.getString(field.getName()));
+						
+						if(jSONObject.has(field.getName())){
+						
+						
+							if(jSONObject.getString(field.getName()) == null){
+								
+								field.set(objectInstance, "nulo");
+							}	
+							else{		
+								
+								field.set(objectInstance, jSONObject.getString(field.getName()));
+							}
+						
+						}
+						
 					}
 				}
 			}

@@ -9,7 +9,7 @@ import br.com.zapimo.util.MeuAlerta;
 public class BancoSQLiteOpenHelper extends SQLiteOpenHelper {
 
 	public static final String BANCO_NOME = "ZapImo";
-	public static final int BANCO_VERSAO = 2;
+	public static final int BANCO_VERSAO = 4;
 	private Context context;
 	
 	public BancoSQLiteOpenHelper(Context _context) {
@@ -23,7 +23,7 @@ public class BancoSQLiteOpenHelper extends SQLiteOpenHelper {
 		for (String tabela : ListaComTabelasModel.devolveListaComTabelasModel()) {
 
 			try {
-				Class<?> classe = Class.forName(IpURL.NOME_PACOTE_MODEL + tabela);
+				Class<?> classe = Class.forName(IpURL.NOME_PACOTE_MODELL.getValor()  + tabela);
 			
 				sQLiteDatabase.execSQL(Query.criaCreateTableComKeyy(classe));
 			} 
@@ -40,7 +40,7 @@ public class BancoSQLiteOpenHelper extends SQLiteOpenHelper {
 		for (String tabela : ListaComTabelasModel.devolveListaComTabelasModel()) {
 
 			try {
-				Class<?> classe = Class.forName(IpURL.NOME_PACOTE_MODEL + tabela);
+				Class<?> classe = Class.forName(IpURL.NOME_PACOTE_MODELL.getValor() + tabela);
 				
 				sQLiteDatabase.execSQL(Query.criaDropTable_final(classe));				
 			} 

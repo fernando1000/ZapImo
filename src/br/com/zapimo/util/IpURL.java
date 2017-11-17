@@ -4,7 +4,7 @@ public enum IpURL {
 	
 	URL_SERVER_REST("http://demo4573903.mockable.io"),
 	
-	NOME_PACOTE_MODEL("br.com.zapimo.model.");
+	NOME_PACOTE_MODELL("br.com.zapimo.model.");
 	
 	private String valor;
 	
