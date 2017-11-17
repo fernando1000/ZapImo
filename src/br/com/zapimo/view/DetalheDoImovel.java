@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.LinearLayout.LayoutParams;
 import br.com.zapimo.model.Contato;
 import br.com.zapimo.model.Imoveis;
 import br.com.zapimo.util.IpURL;
@@ -42,6 +44,8 @@ public class DetalheDoImovel extends Activity {
 		
 		MeusWidgetsBuilder meusWidgetsBuilder = new MeusWidgetsBuilder(context);
 		
+		ScrollView scrollView = meusWidgetsBuilder.criaScrollView();
+		
 		final LinearLayout llTela = meusWidgetsBuilder.criaLinearLayoutTELA();
 		
 		final EditText etNome = meusWidgetsBuilder.criaEditText("nome");
@@ -49,8 +53,10 @@ public class DetalheDoImovel extends Activity {
 		final EditText etTelefone = meusWidgetsBuilder.criaEditText("telefone");
 		final EditText etMensagem = meusWidgetsBuilder.criaEditText("Mensagem");
 		
-		Button botaoEmviarMensagem = new Button(context);
-		botaoEmviarMensagem.setText("Enviar Mensagem");
+		LayoutParams lp_MATCH_WRAP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);			
+		lp_MATCH_WRAP.setMargins(0, 20, 0, 0);		
+
+		Button botaoEmviarMensagem = meusWidgetsBuilder.criaBotao("Enviar Mensagem", lp_MATCH_WRAP);	
 		botaoEmviarMensagem.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -58,14 +64,32 @@ public class DetalheDoImovel extends Activity {
 				acaoAposClique(llTela, imovel.getCodImovel(), etNome, etEmail, etTelefone, etMensagem);
 			}
 		});
-		
+
+
+        	
+        	
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("CodImovel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getCodImovel())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("TipoImovel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getTipoImovel())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("PrecoVenda: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getPrecoVenda())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Dormitorios: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getDormitorios())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Suites: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getSuites())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Vagas: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getVagas())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("AreaUtil: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getAreaUtil())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("AreaTotal: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getAreaTotal())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("DataAtualizacao: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getDataAtualizacao())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("UrlImagem: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getUrlImagem())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("SubTipoOferta: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getSubTipoOferta())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("SubtipoImovel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getSubtipoImovel())));
+
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Nome: ", etNome));
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("E-Mail: ", etEmail));
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Telefone: ", etTelefone));
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Mensagem: ", etMensagem));
 		llTela.addView(botaoEmviarMensagem);
+
+		scrollView.addView(llTela);
 		
-		setContentView(llTela);
+		setContentView(scrollView);
 	}
 	
 	private void acaoAposClique(LinearLayout llTela, int codImovel, EditText etNome, EditText etEmail, EditText etTelefone, EditText etMensagem){

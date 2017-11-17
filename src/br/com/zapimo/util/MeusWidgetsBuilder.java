@@ -84,6 +84,16 @@ public class MeusWidgetsBuilder {
 		return linearLayout;
 	}
 	
+	public LinearLayout criaLinearLayoutLINHA(String titulo, TextView tv_conteudo){
+		
+		LinearLayout linearLayout = new LinearLayout(context);
+		linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+		linearLayout.addView(criaTextViewTITULO(titulo));
+		linearLayout.addView(tv_conteudo);
+		
+		return linearLayout;
+	}
+
 	public LinearLayout criaLinearLayoutLINHAet(String titulo, EditText et_conteudo){
 		
 		LinearLayout linearLayout = new LinearLayout(context);
