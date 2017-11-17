@@ -9,7 +9,7 @@ import br.com.zapimo.util.MeuAlerta;
 public class BancoSQLiteOpenHelper extends SQLiteOpenHelper {
 
 	public static final String BANCO_NOME = "ZapImo";
-	public static final int BANCO_VERSAO = 1;
+	public static final int BANCO_VERSAO = 2;
 	private Context context;
 	
 	public BancoSQLiteOpenHelper(Context _context) {

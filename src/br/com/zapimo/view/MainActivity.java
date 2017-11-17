@@ -14,7 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import br.com.zapimo.dao.Dao;
-import br.com.zapimo.model.ClasseHolder;
+import br.com.zapimo.model.Imoveis;
 import br.com.zapimo.util.IpURL;
 import br.com.zapimo.util.JsonUtil;
 import br.com.zapimo.util.MeuAlerta;
@@ -77,11 +77,11 @@ public class MainActivity extends Activity {
 
 	private void respostaBuscaImoveisWS(JSONObject jSONObjectResposta, ProgressDialog progressDialog) {
 					
-		dao.deletaTodosDados();					
+		//dao.deletaTodosDados();					
 	
 		JsonUtil jsonUtil = new JsonUtil();
 					
-		boolean deuErro = jsonUtil.insereInformacoesDoJsonNoBancoDeDados(context, jSONObjectResposta, dao, ClasseHolder.class);
+		boolean deuErro = jsonUtil.insereInformacoesDoJsonNoBancoDeDados(context, jSONObjectResposta, dao, Imoveis.class);
 				
 		MeuProgressDialog.encerraProgressDialog(progressDialog);
 
