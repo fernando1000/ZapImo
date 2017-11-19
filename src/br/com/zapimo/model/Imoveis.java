@@ -1,11 +1,83 @@
 package br.com.zapimo.model;
 
 import java.io.Serializable;
+import java.util.List;
 
-public class Imoveis implements Serializable{
-	
+public class Imoveis implements Serializable {
+
+	private int CodImovel;
+	private int Suites;
+	private int Dormitorios;
+	private int PrecoVenda;
+	private int AreaTotal;
+	private int Vagas;
+	private int AreaUtil;
+	private double DistanciaKilometros;
 	private String DataAtualizacao;
+	private String UrlImagem;
+	private String EstagioObra;
+	private String SubTipoOferta;
+	private String TipoImovel;
+	private String SubtipoImovel;
+	private Boolean StatusQualidadeTotal;
+	private Cliente Cliente;
+	private Endereco Endereco;
+
+	private int PrecoCondominio;
+	private String InformacoesComplementares;
+	private String Observacao;
+	private List<String> Fotos;
+
+	public static final String COLUMN_TEXT_INFORMACOESCOMPLEMENTARES = "InformacoesComplementares";
+	public static final String COLUMN_INTEGER_PRECOCONDOMINIO = "PrecoCondominio";
+	public static final String COLUMN_TEXT_OBSERVACAO = "Observacao";
+	public static final String COLUMN_INTEGER_PRECOVENDA = "PrecoVenda";
+	public static final String COLUMN_TEXT_DISTANCIAKILOMETROS = "DistanciaKilometros";
+	public static final String COLUMN_TEXT_ESTAGIOOBRA = "EstagioObra";
+	public static final String COLUMN_TEXT_SUBTIPOOFERTA = "SubTipoOferta";
 	public static final String COLUMN_TEXT_DATAATUALIZACAO = "DataAtualizacao";
+	public static final String COLUMN_TEXT_TIPOIMOVEL = "TipoImovel";
+	public static final String COLUMN_INTEGER_AREATOTAL = "AreaTotal";
+	public static final String COLUMN_TEXT_URLIMAGEM = "UrlImagem";
+	public static final String COLUMN_INTEGER_SUITES = "Suites";
+	public static final String COLUMN_TEXT_STATUSQUALIDADETOTAL = "StatusQualidadeTotal";
+	public static final String COLUMN_INTEGER_DORMITORIOS = "Dormitorios";
+	public static final String COLUMN_INTEGER_VAGAS = "Vagas";
+	public static final String COLUMN_INTEGER_CODIMOVEL = "CodImovel";
+	public static final String COLUMN_TEXT_SUBTIPOIMOVEL = "SubtipoImovel";
+	public static final String COLUMN_INTEGER_AREAUTIL = "AreaUtil";
+
+	public int getPrecoCondominio() {
+		return PrecoCondominio;
+	}
+
+	public void setPrecoCondominio(int precoCondominio) {
+		PrecoCondominio = precoCondominio;
+	}
+
+	public String getInformacoesComplementares() {
+		return InformacoesComplementares;
+	}
+
+	public void setInformacoesComplementares(String informacoesComplementares) {
+		InformacoesComplementares = informacoesComplementares;
+	}
+
+	public String getObservacao() {
+		return Observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		Observacao = observacao;
+	}
+
+	public List<String> getFotos() {
+		return Fotos;
+	}
+
+	public void setFotos(List<String> fotos) {
+		Fotos = fotos;
+	}
 
 	public void setDataAtualizacao(String DataAtualizacao) {
 		this.DataAtualizacao = DataAtualizacao;
@@ -15,9 +87,6 @@ public class Imoveis implements Serializable{
 		return DataAtualizacao;
 	}
 
-	private String TipoImovel;
-	public static final String COLUMN_TEXT_TIPOIMOVEL = "TipoImovel";
-
 	public void setTipoImovel(String TipoImovel) {
 		this.TipoImovel = TipoImovel;
 	}
@@ -25,9 +94,6 @@ public class Imoveis implements Serializable{
 	public String getTipoImovel() {
 		return TipoImovel;
 	}
-
-	private int AreaTotal;
-	public static final String COLUMN_INTEGER_AREATOTAL = "AreaTotal";
 
 	public void setAreaTotal(int AreaTotal) {
 		this.AreaTotal = AreaTotal;
@@ -37,9 +103,6 @@ public class Imoveis implements Serializable{
 		return AreaTotal;
 	}
 
-	private int AreaUtil;
-	public static final String COLUMN_INTEGER_AREAUTIL = "AreaUtil";
-
 	public void setAreaUtil(int AreaUtil) {
 		this.AreaUtil = AreaUtil;
 	}
@@ -47,9 +110,6 @@ public class Imoveis implements Serializable{
 	public int getAreaUtil() {
 		return AreaUtil;
 	}
-
-	private int Vagas;
-	public static final String COLUMN_INTEGER_VAGAS = "Vagas";
 
 	public void setVagas(int Vagas) {
 		this.Vagas = Vagas;
@@ -59,9 +119,6 @@ public class Imoveis implements Serializable{
 		return Vagas;
 	}
 
-	private String SubtipoImovel;
-	public static final String COLUMN_TEXT_SUBTIPOIMOVEL = "SubtipoImovel";
-
 	public void setSubtipoImovel(String SubtipoImovel) {
 		this.SubtipoImovel = SubtipoImovel;
 	}
@@ -69,9 +126,6 @@ public class Imoveis implements Serializable{
 	public String getSubtipoImovel() {
 		return SubtipoImovel;
 	}
-
-	private int CodImovel;
-	public static final String COLUMN_INTEGER_CODIMOVEL = "CodImovel";
 
 	public void setCodImovel(int CodImovel) {
 		this.CodImovel = CodImovel;
@@ -81,9 +135,6 @@ public class Imoveis implements Serializable{
 		return CodImovel;
 	}
 
-	private int PrecoVenda;
-	public static final String COLUMN_INTEGER_PRECOVENDA = "PrecoVenda";
-
 	public void setPrecoVenda(int PrecoVenda) {
 		this.PrecoVenda = PrecoVenda;
 	}
@@ -91,9 +142,6 @@ public class Imoveis implements Serializable{
 	public int getPrecoVenda() {
 		return PrecoVenda;
 	}
-
-	private Endereco Endereco;
-	public static final String COLUMN_TEXT_ENDERECO = "Endereco";
 
 	public void setEndereco(Endereco Endereco) {
 		this.Endereco = Endereco;
@@ -103,9 +151,6 @@ public class Imoveis implements Serializable{
 		return Endereco;
 	}
 
-	private double DistanciaKilometros;
-	public static final String COLUMN_TEXT_DISTANCIAKILOMETROS = "DistanciaKilometros";
-
 	public void setDistanciaKilometros(double DistanciaKilometros) {
 		this.DistanciaKilometros = DistanciaKilometros;
 	}
@@ -113,9 +158,6 @@ public class Imoveis implements Serializable{
 	public double getDistanciaKilometros() {
 		return DistanciaKilometros;
 	}
-
-	private String SubTipoOferta;
-	public static final String COLUMN_TEXT_SUBTIPOOFERTA = "SubTipoOferta";
 
 	public void setSubTipoOferta(String SubTipoOferta) {
 		this.SubTipoOferta = SubTipoOferta;
@@ -125,9 +167,6 @@ public class Imoveis implements Serializable{
 		return SubTipoOferta;
 	}
 
-	private String EstagioObra;
-	public static final String COLUMN_TEXT_ESTAGIOOBRA = "EstagioObra";
-
 	public void setEstagioObra(String EstagioObra) {
 		this.EstagioObra = EstagioObra;
 	}
@@ -135,9 +174,6 @@ public class Imoveis implements Serializable{
 	public String getEstagioObra() {
 		return EstagioObra;
 	}
-
-	private Boolean StatusQualidadeTotal;
-	public static final String COLUMN_TEXT_STATUSQUALIDADETOTAL = "StatusQualidadeTotal";
 
 	public void setStatusQualidadeTotal(Boolean StatusQualidadeTotal) {
 		this.StatusQualidadeTotal = StatusQualidadeTotal;
@@ -147,9 +183,6 @@ public class Imoveis implements Serializable{
 		return StatusQualidadeTotal;
 	}
 
-	private int Dormitorios;
-	public static final String COLUMN_INTEGER_DORMITORIOS = "Dormitorios";
-
 	public void setDormitorios(int Dormitorios) {
 		this.Dormitorios = Dormitorios;
 	}
@@ -157,9 +190,6 @@ public class Imoveis implements Serializable{
 	public int getDormitorios() {
 		return Dormitorios;
 	}
-
-	private Cliente Cliente;
-	public static final String COLUMN_TEXT_CLIENTE = "Cliente";
 
 	public void setCliente(Cliente Cliente) {
 		this.Cliente = Cliente;
@@ -169,9 +199,6 @@ public class Imoveis implements Serializable{
 		return Cliente;
 	}
 
-	private String UrlImagem;
-	public static final String COLUMN_TEXT_URLIMAGEM = "UrlImagem";
-
 	public void setUrlImagem(String UrlImagem) {
 		this.UrlImagem = UrlImagem;
 	}
@@ -179,9 +206,6 @@ public class Imoveis implements Serializable{
 	public String getUrlImagem() {
 		return UrlImagem;
 	}
-
-	private int Suites;
-	public static final String COLUMN_INTEGER_SUITES = "Suites";
 
 	public void setSuites(int Suites) {
 		this.Suites = Suites;

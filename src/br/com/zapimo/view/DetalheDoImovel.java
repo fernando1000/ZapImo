@@ -29,17 +29,21 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.LinearLayout.LayoutParams;
 import br.com.zapimo.R;
+import br.com.zapimo.dao.Dao;
 import br.com.zapimo.model.Contato;
 import br.com.zapimo.model.Imoveis;
 import br.com.zapimo.util.IpURL;
+import br.com.zapimo.util.JsonUtil;
 import br.com.zapimo.util.MeuAlerta;
 import br.com.zapimo.util.MeuProgressDialog;
 import br.com.zapimo.util.MeusWidgetsBuilder;
 import br.com.zapimo.util.MontaJSONObjectGenerico;
+import br.com.zapimo.util.VolleySingleton;
 import br.com.zapimo.util.VolleyTimeout;
 
 public class DetalheDoImovel extends Activity {
 
+	private static final String RESOURCE_DETALHE_ITEM = "/imoveis/";	
 	private static final String RESOURCE_ENVIA_MENSAGEM = "/imoveis/contato";	
 	private RequestQueue requestQueue;
 	private Context context;	
@@ -51,7 +55,7 @@ public class DetalheDoImovel extends Activity {
 		super.onCreate(savedInstanceState);
 		
 	    Bundle bundle = getIntent().getExtras();
-	    final Imoveis imovel = (Imoveis) bundle.getSerializable("Imoveis");
+	    final Imoveis imovelDoSerializable = (Imoveis) bundle.getSerializable("Imoveis");
 
 		context = DetalheDoImovel.this;
 						
@@ -68,15 +72,76 @@ public class DetalheDoImovel extends Activity {
 				return cache.get(url);
 			}
 		});
-
+		
 		listaComImagens = new ArrayList<String>();
-		listaComImagens.add(imovel.getUrlImagem());
-		listaComImagens.add("imovel.getUrlImagem()");
+
+		buscaImovel(imovelDoSerializable.getCodImovel());
+
 		
 		
 		
-		setContentView(devolveTelaDetalheDoImovel(imovel));
+		setContentView(devolveTelaDetalheDoImovel(imovelDoSerializable));
 	}
+	
+	private void buscaImovel(int codImovel) {
+		
+		requestQueue = VolleySingleton.getInstance(context).getRequestQueue();
+
+		String url = IpURL.URL_SERVER_REST.getValor() + RESOURCE_DETALHE_ITEM + codImovel;
+		
+	    final ProgressDialog progressDialog = MeuProgressDialog.criaProgressDialog(context, "Buscando Imóveis...");
+
+		JsonObjectRequest jsonObjRequest = new JsonObjectRequest(
+
+				Request.Method.GET, url, null,
+
+				new Response.Listener<JSONObject>() {
+					@Override
+					public void onResponse(JSONObject jSONObjectResposta) {
+
+						respostaBuscaImovelWS(jSONObjectResposta, progressDialog);						
+					}
+				}, 
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError volleyError) {
+						
+						MeuProgressDialog.encerraProgressDialog(progressDialog);
+						
+						new MeuAlerta("volleyError", volleyError.toString(), context).meuAlertaOk();
+					}
+				});
+
+		jsonObjRequest.setRetryPolicy(VolleyTimeout.recuperarTimeout());
+
+		requestQueue.add(jsonObjRequest);
+	}
+
+	private void respostaBuscaImovelWS(JSONObject jSONObjectResposta, ProgressDialog progressDialog) {
+			
+		JsonUtil jsonUtil = new JsonUtil();
+			
+		//talvez remover
+		Dao dao = new Dao(context);
+		//talvez remover
+		
+		boolean deuErro = jsonUtil.insereInformacoesDoJsonNoBancoDeDados(context, jSONObjectResposta, dao, Imoveis.class);
+				
+		MeuProgressDialog.encerraProgressDialog(progressDialog);
+
+		if(deuErro){
+
+			new MeuAlerta("Erro", "Erro ao tentar inserir dados", context).meuAlertaOk();
+		}else{	
+			
+			//listaComImagens.add(imovelDoSerializable.getUrlImagem());
+			listaComImagens.add("imovel.getUrlImagem()");
+			listaComImagens.add("imosdfsdf");
+
+			
+		}				
+	}
+
 	
 	private ScrollView devolveTelaDetalheDoImovel(final Imoveis imovel) {
 		
@@ -96,22 +161,17 @@ public class DetalheDoImovel extends Activity {
 		llFotosInternas.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		
 		//adiciona fotos no llFotosInternas
-
 		for(String urlImagem : listaComImagens) {
 		
 		ImageView imageViewFotos = new ImageView(context);
 		imageViewFotos.setAdjustViewBounds(true);
 		imageViewFotos.setImageDrawable(context.getResources().getDrawable(R.drawable.carregamento));
-			
-		
 		imageViewFotos.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
-		
 		
 		llFotosInternas.addView(imageViewFotos);
 
 		imageLoader.get(urlImagem, imageLoader.getImageListener(imageViewFotos, R.drawable.carregamento, R.drawable.erro));
 		}
-		
 		//adiciona fotos no llFotosInternas
 			
 				
@@ -137,24 +197,21 @@ public class DetalheDoImovel extends Activity {
 		});
 
 		llTela.addView(llFotosHolder);
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("CodImovel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getCodImovel())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("TipoImovel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getTipoImovel())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("PrecoVenda: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getPrecoVenda())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Dormitorios: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getDormitorios())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Suites: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getSuites())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Vagas: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getVagas())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("AreaUtil: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getAreaUtil())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("AreaTotal: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getAreaTotal())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("DataAtualizacao: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getDataAtualizacao())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("UrlImagem: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getUrlImagem())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("SubTipoOferta: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getSubTipoOferta())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("SubtipoImovel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getSubtipoImovel())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Tipo de imóvel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getSubtipoImovel())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Tipo de oferta: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getSubTipoOferta())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Valor: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getPrecoVenda())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Dormitório(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getDormitorios())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Suíte(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getSuites())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Vaga(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getVagas())));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Área util: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getAreaUtil()+"m²")));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Área total: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getAreaTotal()+"m²")));
+		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Data de atualização: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getDataAtualizacao())));	
 
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Nome: ", etNome));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("E-Mail: ", etEmail));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Telefone: ", etTelefone));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Mensagem: ", etMensagem));
-		llTela.addView(botaoEmviarMensagem);
+		//llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Nome: ", etNome));
+		//llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("E-Mail: ", etEmail));
+		//llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Telefone: ", etTelefone));
+		//llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Mensagem: ", etMensagem));
+		//llTela.addView(botaoEmviarMensagem);
 
 		scrollViewTela.addView(llTela);
 

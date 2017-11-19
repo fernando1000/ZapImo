@@ -32,7 +32,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(llTela);		
 		
 		context = MainActivity.this;
 
@@ -77,7 +76,7 @@ public class MainActivity extends Activity {
 
 	private void respostaBuscaImoveisWS(JSONObject jSONObjectResposta, ProgressDialog progressDialog) {
 					
-		//dao.deletaTodosDados();					
+		dao.deletaTodosDados();					
 	
 		JsonUtil jsonUtil = new JsonUtil();
 					

@@ -2,7 +2,10 @@ package br.com.zapimo.model;
 
 public class Cliente {
 	
+	private int CodCliente;
 	private String NomeFantasia;
+
+	public static final String COLUMN_INTEGER_CODCLIENTE = "CodCliente";
 	public static final String COLUMN_TEXT_NOMEFANTASIA = "NomeFantasia";
 
 	public void setNomeFantasia(String NomeFantasia) {
@@ -13,8 +16,6 @@ public class Cliente {
 		return NomeFantasia;
 	}
 
-	private int CodCliente;
-	public static final String COLUMN_INTEGER_CODCLIENTE = "CodCliente";
 
 	public void setCodCliente(int CodCliente) {
 		this.CodCliente = CodCliente;
