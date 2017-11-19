@@ -9,5 +9,8 @@
     <color name="vermelhoClaro">  #FF6347</color>
     <color name="verdeEscuro">  #063006</color>
     <color name="preto">#000000</color>
-    
+   
+     <color name="azulArdosiaEscuro">#6B238E</color>
+     <color name="silver">#E6E8FA</color>
+   
 </resources>

@@ -1,10 +1,15 @@
 package br.com.zapimo.view;
 
 import java.util.List;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.util.LruCache;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -31,10 +36,25 @@ public class ListaImoveisActivity extends Activity {
 		dao = new Dao(context);
 
 		listaDeImoveis = dao.listaTodaTabela(Imoveis.class);
-
+		
+		RequestQueue requestQueue = Volley.newRequestQueue(context);
+		
+		ImageLoader imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
+			private final LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(10);
+			
+			@Override
+			public void putBitmap(String url, Bitmap bitmap) {
+				cache.put(url, bitmap);
+			}
+			
+			@Override
+			public Bitmap getBitmap(String url) {
+				return cache.get(url);
+			}
+		});
+			
 		ListView listView = new ListView(context);
-		listView.setAdapter(new ImoveisAdapter(context, 0, listaDeImoveis));
-		listView.setDividerHeight(7);
+		listView.setAdapter(new ImovelBaseAdapter(context, listaDeImoveis, imageLoader));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -60,8 +80,7 @@ public class ListaImoveisActivity extends Activity {
 				break;
 			}
 		}
-
-		
+	
 		Intent intent = new Intent(context, DetalheDoImovel.class);
 
 						 Bundle data = new Bundle();

@@ -2,6 +2,7 @@ package br.com.zapimo.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +51,16 @@ public class MeusWidgetsBuilder {
 		textView.setLayoutParams(lllp);
 
 		return textView;
+	}
+
+	public TextView criaTextViewItemLista(String texto){
+		
+		TextView tvTexto = new TextView(context);
+		tvTexto.setText(texto);
+		tvTexto.setTextColor(Color.WHITE);
+		tvTexto.setTextSize(10);
+		
+		return tvTexto;
 	}
 
 	public Button criaBotao(String texto, LayoutParams lllp){
