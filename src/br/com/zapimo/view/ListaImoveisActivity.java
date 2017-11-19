@@ -41,12 +41,10 @@ public class ListaImoveisActivity extends Activity {
 		
 		ImageLoader imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
 			private final LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(10);
-			
 			@Override
 			public void putBitmap(String url, Bitmap bitmap) {
 				cache.put(url, bitmap);
 			}
-			
 			@Override
 			public Bitmap getBitmap(String url) {
 				return cache.get(url);

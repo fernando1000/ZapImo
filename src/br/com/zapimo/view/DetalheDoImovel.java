@@ -1,23 +1,34 @@
 package br.com.zapimo.view;
 
+import java.util.ArrayList;
+
 import org.json.JSONObject;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.util.LruCache;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.LinearLayout.LayoutParams;
+import br.com.zapimo.R;
 import br.com.zapimo.model.Contato;
 import br.com.zapimo.model.Imoveis;
 import br.com.zapimo.util.IpURL;
@@ -30,8 +41,10 @@ import br.com.zapimo.util.VolleyTimeout;
 public class DetalheDoImovel extends Activity {
 
 	private static final String RESOURCE_ENVIA_MENSAGEM = "/imoveis/contato";	
-	private RequestQueue queue;
+	private RequestQueue requestQueue;
 	private Context context;	
+	private ImageLoader imageLoader;
+	private ArrayList<String> listaComImagens;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +54,70 @@ public class DetalheDoImovel extends Activity {
 	    final Imoveis imovel = (Imoveis) bundle.getSerializable("Imoveis");
 
 		context = DetalheDoImovel.this;
+						
+		requestQueue = Volley.newRequestQueue(context);
+
+		imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
+			private final LruCache<String, Bitmap> cache = new LruCache<String, Bitmap>(10);
+			@Override
+			public void putBitmap(String url, Bitmap bitmap) {
+				cache.put(url, bitmap);
+			}
+			@Override
+			public Bitmap getBitmap(String url) {
+				return cache.get(url);
+			}
+		});
+
+		listaComImagens = new ArrayList<String>();
+		listaComImagens.add(imovel.getUrlImagem());
+		listaComImagens.add("imovel.getUrlImagem()");
+		
+		
+		
+		setContentView(devolveTelaDetalheDoImovel(imovel));
+	}
+	
+	private ScrollView devolveTelaDetalheDoImovel(final Imoveis imovel) {
 		
 		MeusWidgetsBuilder meusWidgetsBuilder = new MeusWidgetsBuilder(context);
-		
-		ScrollView scrollView = meusWidgetsBuilder.criaScrollView();
+
+		ScrollView scrollViewTela = meusWidgetsBuilder.criaScrollView();
 		
 		final LinearLayout llTela = meusWidgetsBuilder.criaLinearLayoutTELA();
+		
+		LinearLayout llFotosHolder = new LinearLayout(context);
+		llFotosHolder.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 700));
+			
+		HorizontalScrollView horizontalScrollView = new HorizontalScrollView(context); 
+		horizontalScrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+		LinearLayout llFotosInternas = new LinearLayout(context);
+		llFotosInternas.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		
+		//adiciona fotos no llFotosInternas
+
+		for(String urlImagem : listaComImagens) {
+		
+		ImageView imageViewFotos = new ImageView(context);
+		imageViewFotos.setAdjustViewBounds(true);
+		imageViewFotos.setImageDrawable(context.getResources().getDrawable(R.drawable.carregamento));
+			
+		
+		imageViewFotos.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+		
+		
+		llFotosInternas.addView(imageViewFotos);
+
+		imageLoader.get(urlImagem, imageLoader.getImageListener(imageViewFotos, R.drawable.carregamento, R.drawable.erro));
+		}
+		
+		//adiciona fotos no llFotosInternas
+			
+				
+		horizontalScrollView.addView(llFotosInternas);
+		
+		llFotosHolder.addView(horizontalScrollView);
 		
 		final EditText etNome = meusWidgetsBuilder.criaEditText("nome");
 		final EditText etEmail = meusWidgetsBuilder.criaEditText("email");
@@ -65,9 +136,7 @@ public class DetalheDoImovel extends Activity {
 			}
 		});
 
-
-        	
-        	
+		llTela.addView(llFotosHolder);
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("CodImovel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getCodImovel())));
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("TipoImovel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovel.getTipoImovel())));
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("PrecoVenda: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovel.getPrecoVenda())));
@@ -87,9 +156,9 @@ public class DetalheDoImovel extends Activity {
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Mensagem: ", etMensagem));
 		llTela.addView(botaoEmviarMensagem);
 
-		scrollView.addView(llTela);
-		
-		setContentView(scrollView);
+		scrollViewTela.addView(llTela);
+
+		return scrollViewTela;
 	}
 	
 	private void acaoAposClique(LinearLayout llTela, int codImovel, EditText etNome, EditText etEmail, EditText etTelefone, EditText etMensagem){
@@ -175,7 +244,7 @@ public class DetalheDoImovel extends Activity {
 
 		jsonObjRequest.setRetryPolicy(VolleyTimeout.recuperarTimeout());
 
-		queue.add(jsonObjRequest);		
+		requestQueue.add(jsonObjRequest);		
 	}
 	
 	private void respostaBuscaUsuarioWS(JSONObject jSONObjectResposta, ProgressDialog progressDialog) {

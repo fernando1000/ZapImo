@@ -23,32 +23,22 @@ public class MeusWidgetsBuilder {
 	
 	public TextView criaTextViewTITULO(String texto){
 		
-		LayoutParams lllp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);			
-
 		TextView textView = new TextView(context);
-		textView.setTextSize(24);
+		textView.setTextSize(16);
 		textView.setTextColor(context.getResources().getColor(R.color.azul)); 
 		textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
 		textView.setText(texto);	
-
-								 lllp.setMargins(0, 20, 0, 0);		
-		textView.setLayoutParams(lllp);
 
 		return textView;
 	}
 
 	public TextView criaTextViewCONTEUDO(String texto){
-		
-		LayoutParams lllp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);			
 
 		TextView textView = new TextView(context);
-		textView.setTextSize(20);
+		textView.setTextSize(16);
 		textView.setTextColor(context.getResources().getColor(R.color.preto)); 
 		textView.setTypeface(textView.getTypeface(), Typeface.ITALIC);
 		textView.setText(texto);	
-		
-								 lllp.setMargins(0, 20, 0, 0);		
-		textView.setLayoutParams(lllp);
 
 		return textView;
 	}
