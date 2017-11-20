@@ -162,8 +162,22 @@ public class DetalheDoImovel extends Activity {
 		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Observação: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getObservacao())));	
 		
 		
+		for(String carac : imovelDoWS.getCaracteristicas()) {
+			
+			llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Caracteristicas: ", meusWidgetsBuilder.criaTextViewCONTEUDO(carac)));	
+		}
+	
+		for(String caracComum : imovelDoWS.getCaracteristicasComum()) {
+			
+			llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Caracteristicas comum: ", meusWidgetsBuilder.criaTextViewCONTEUDO(caracComum)));	
+		}
+	
 		
 		
+		
+		
+		
+	
 	}
 
 	private ScrollView devolveTelaDetalheDoImovel() {

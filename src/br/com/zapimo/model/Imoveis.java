@@ -27,6 +27,10 @@ public class Imoveis implements Serializable {
 	private String InformacoesComplementares;
 	private String Observacao;
 	private List<String> Fotos;
+	
+	private List<String> Caracteristicas;
+	private List<String> CaracteristicasComum;
+	
 
 	public static final String COLUMN_TEXT_INFORMACOESCOMPLEMENTARES = "InformacoesComplementares";
 	public static final String COLUMN_INTEGER_PRECOCONDOMINIO = "PrecoCondominio";
@@ -46,6 +50,25 @@ public class Imoveis implements Serializable {
 	public static final String COLUMN_INTEGER_CODIMOVEL = "CodImovel";
 	public static final String COLUMN_TEXT_SUBTIPOIMOVEL = "SubtipoImovel";
 	public static final String COLUMN_INTEGER_AREAUTIL = "AreaUtil";
+
+	
+	
+	
+	public List<String> getCaracteristicas() {
+		return Caracteristicas;
+	}
+
+	public void setCaracteristicas(List<String> caracteristicas) {
+		Caracteristicas = caracteristicas;
+	}
+
+	public List<String> getCaracteristicasComum() {
+		return CaracteristicasComum;
+	}
+
+	public void setCaracteristicasComum(List<String> caracteristicasComum) {
+		CaracteristicasComum = caracteristicasComum;
+	}
 
 	public int getPrecoCondominio() {
 		return PrecoCondominio;
