@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,6 +22,30 @@ public class MeusWidgetsBuilder {
 		this.context = _context;
 	}
 	
+	public LinearLayout criaLinearLayoutcomBordaArredondada(){
+		
+		LinearLayout ll_holder = new LinearLayout(context);
+		ll_holder.setOrientation(LinearLayout.VERTICAL);
+		ll_holder.setBackground(criaGradientDrawable());
+		ll_holder.setPadding(10, 10, 10, 10);
+		
+		LayoutParams lp_MATCH_WRAP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);			
+							lp_MATCH_WRAP.setMargins(0, 20, 0, 20);		
+		ll_holder.setLayoutParams(lp_MATCH_WRAP);
+		
+		return ll_holder;
+	}
+	private GradientDrawable criaGradientDrawable(){
+		
+		GradientDrawable drawable = new GradientDrawable();
+		drawable.setShape(GradientDrawable.RECTANGLE);
+		drawable.setStroke(3, Color.BLACK);
+		drawable.setCornerRadius(8);
+		drawable.setColor(Color.WHITE);
+		
+		return drawable;
+	}
+
 	public TextView criaTextViewTITULO(String texto){
 		
 		TextView textView = new TextView(context);
@@ -56,7 +81,7 @@ public class MeusWidgetsBuilder {
 	public Button criaBotao(String texto, LayoutParams lllp){
 
 		Button button = new Button(context);
-		button.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_btn));
+		button.setBackground(context.getResources().getDrawable(R.drawable.style_btn));
 		button.setText(texto);
 		button.setTextColor(context.getResources().getColor(R.color.branco));
 		button.setTextSize(30);
@@ -68,10 +93,14 @@ public class MeusWidgetsBuilder {
 	public EditText criaEditText(String texto){
 	
 	    EditText editText = new EditText(context);
-	    editText.setTextSize(24);
+	    editText.setTextSize(12);
 	    editText.setBackground(context.getResources().getDrawable(R.drawable.style_edit));    		  
 	    editText.setText(texto);
 	    
+		LayoutParams lp_MATCH_WRAP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);			
+						//lp_MATCH_WRAP.setMargins(0, 20, 0, 20);		
+		editText.setLayoutParams(lp_MATCH_WRAP);
+
 	    return editText;
 	}
 
@@ -111,8 +140,5 @@ public class MeusWidgetsBuilder {
 	
 		return scrollView;
 	}
-
-	
-	
 	
 }

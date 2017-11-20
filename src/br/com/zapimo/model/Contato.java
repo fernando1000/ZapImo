@@ -7,13 +7,14 @@ public class Contato {
 	private String email;
 	private String telefone;
 	private String mensagem; 
-	
+
+	/*
 	public static final String COLUMN_INTEGER_COD_IMOVEL = "codImovel";
 	public static final String COLUMN_TEXT_NOME = "nome";
 	public static final String COLUMN_TEXT_EMAIL = "email";
 	public static final String COLUMN_TEXT_TELEFONE = "telefone";
 	public static final String COLUMN_TEXT_MENSAGEM = "mensagem";
-	
+	*/
 	
 	public int getCodImovel() {
 		return codImovel;

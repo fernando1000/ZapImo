@@ -25,17 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name=".view.ListaImoveisActivity"
-            android:label="ListaImoveisActivity">
+            android:label="Lista de imóveis">
         </activity>
-     
         <activity
             android:name=".view.DetalheDoImovel"
-            android:label="DetalheDoImovel">
+            android:label="Detalhe do imóvel">
         </activity>
-     
     </application>
-
 </manifest>

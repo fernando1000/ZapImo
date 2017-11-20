@@ -1,6 +1,8 @@
 package br.com.zapimo.view;
 
 import java.util.ArrayList;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,7 +17,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +27,7 @@ import android.widget.ScrollView;
 import android.widget.LinearLayout.LayoutParams;
 import br.com.zapimo.R;
 import br.com.zapimo.model.Contato;
+import br.com.zapimo.model.Endereco;
 import br.com.zapimo.model.Imoveis;
 import br.com.zapimo.util.IpURL;
 import br.com.zapimo.util.JsonUtil;
@@ -33,6 +35,7 @@ import br.com.zapimo.util.MeuAlerta;
 import br.com.zapimo.util.MeuProgressDialog;
 import br.com.zapimo.util.MeusWidgetsBuilder;
 import br.com.zapimo.util.MontaJSONObjectGenerico;
+import br.com.zapimo.util.Reais;
 import br.com.zapimo.util.VolleySingleton;
 import br.com.zapimo.util.VolleyTimeout;
 
@@ -76,12 +79,12 @@ public class DetalheDoImovel extends Activity {
 				return cache.get(url);
 			}
 		});
-		
+        
 		buscaImovel(imovelDoSerializable.getCodImovel());
 
-		setContentView(devolveTelaDetalheDoImovel());
+		setContentView(devolveTela());
 	}
-	
+		
 	private void buscaImovel(int codImovel) {
 		
 		requestQueue = VolleySingleton.getInstance(context).getRequestQueue();
@@ -109,7 +112,7 @@ public class DetalheDoImovel extends Activity {
 						
 						listaComImagens.add(imovelDoSerializable.getUrlImagem());
 
-						adicionaFotosNoLlFotosInternas();
+						adicionaImagensNoLinearLayoutFotosInternas();
 					}
 				});
 
@@ -134,9 +137,12 @@ public class DetalheDoImovel extends Activity {
 					listaComImagens.add(urlDaImagem);					
 				}			
 				
-				adicionaFotosNoLlFotosInternas();
-				
-				adicionaOutrosWidgetsNaTela();
+				adicionaImagensNoLinearLayoutFotosInternas();
+				adicionaLinearLayoutEnderecoNaTela();
+				adicionaLinearLayoutClienteNaTela();
+				adicionaLinearLayoutObservacaoNaTela();
+				adicionaLinearLayoutCaracteristicasNaTela();
+				adicionaLinearLayoutCaracteristicasComumNaTela();
 			}	
 		} 
 		catch (Exception erro) {
@@ -145,45 +151,77 @@ public class DetalheDoImovel extends Activity {
 		}					
 	}
 	
-	private void adicionaOutrosWidgetsNaTela(){
-				
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Logradouro: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getEndereco().getLogradouro())));	
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Numero: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getEndereco().getNumero())));	
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Complemento: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getEndereco().getComplemento())));	
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("CEP: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoWS.getEndereco().getCEP())));	
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Bairro: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getEndereco().getBairro())));	
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Cidade: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getEndereco().getCidade())));	
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Estado: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getEndereco().getEstado())));	
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Zona: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getEndereco().getZona())));	
-
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Código do cliente: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoWS.getCliente().getCodCliente())));	
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Nome do Cliente: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getCliente().getNomeFantasia())));	
-
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Observação: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getObservacao())));	
+	private void adicionaLinearLayoutEnderecoNaTela(){
 		
+		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
 		
-		for(String carac : imovelDoWS.getCaracteristicas()) {
-			
-			llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Caracteristicas: ", meusWidgetsBuilder.criaTextViewCONTEUDO(carac)));	
-		}
+		Endereco endereco = imovelDoWS.getEndereco();
+		
+		ll.addView(meusWidgetsBuilder.criaTextViewTITULO("Endereço"));	
+		ll.addView(meusWidgetsBuilder.criaTextViewCONTEUDO(endereco.getLogradouro()+" "+endereco.getNumero()+" "+endereco.getComplemento()+", "+ 
+														   endereco.getBairro() +", "+
+														   endereco.getCidade() + "/"+
+														   endereco.getEstado() + " - "+
+														   endereco.getZona() + " - "+
+														   endereco.getCEP()));
 	
-		for(String caracComum : imovelDoWS.getCaracteristicasComum()) {
-			
-			llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Caracteristicas comum: ", meusWidgetsBuilder.criaTextViewCONTEUDO(caracComum)));	
-		}
-	
+		llTela.addView(ll);	
 		
-		
-		
-		
-		
-	
 	}
 
-	private ScrollView devolveTelaDetalheDoImovel() {
+	private void adicionaLinearLayoutClienteNaTela(){
+
+		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Código do cliente: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoWS.getCliente().getCodCliente())));	
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Nome do Cliente: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getCliente().getNomeFantasia())));	
+
+		llTela.addView(ll);	
+	}
+	
+	private void adicionaLinearLayoutObservacaoNaTela(){
+
+		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+
+		ll.addView(meusWidgetsBuilder.criaTextViewTITULO("Observação"));	
+		ll.addView(meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getObservacao()));	
+
+		llTela.addView(ll);	
+	}
+
+	private void adicionaLinearLayoutCaracteristicasNaTela(){
+
+		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+
+		ll.addView(meusWidgetsBuilder.criaTextViewTITULO("Caracteristicas"));	
+
+		for(String caracteristica : imovelDoWS.getCaracteristicas()) {
+			
+			ll.addView(meusWidgetsBuilder.criaTextViewCONTEUDO("°"+caracteristica));	
+		}	
+		
+		llTela.addView(ll);			
+	}
+
+	private void adicionaLinearLayoutCaracteristicasComumNaTela(){
+
+		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+
+		ll.addView(meusWidgetsBuilder.criaTextViewTITULO("Caracteristicas comum"));	
+
+		for(String caracComum : imovelDoWS.getCaracteristicasComum()) {
+			
+			ll.addView(meusWidgetsBuilder.criaTextViewCONTEUDO("°"+caracComum));	
+		}
+
+		llTela.addView(ll);
+	}
+
+	private ScrollView devolveTela() {
 		
 		ScrollView scrollViewTela = meusWidgetsBuilder.criaScrollView();
-		
+		scrollViewTela.setBackgroundColor(context.getResources().getColor(R.color.azul_claro));
+
 		llTela = meusWidgetsBuilder.criaLinearLayoutTELA();
 		
 		LinearLayout llFotosHolder = new LinearLayout(context);
@@ -195,22 +233,37 @@ public class DetalheDoImovel extends Activity {
 		llFotosInternas = new LinearLayout(context);
 		llFotosInternas.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		
-		adicionaFotosNoLlFotosInternas();
+		adicionaImagensNoLinearLayoutFotosInternas();
 		
 		horizontalScrollView.addView(llFotosInternas);
 		
 		llFotosHolder.addView(horizontalScrollView);
 		
+		llTela.addView(llFotosHolder);
+		
+		adicionaLinearLayoutDescricaoImovelNaTela();
+		
+		adicionaLinearLayoutMensagemNaTela();
+		
+		scrollViewTela.addView(llTela);
+
+		return scrollViewTela;
+	}
+
+	private void adicionaLinearLayoutMensagemNaTela(){
+				
+		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+
 		final EditText etNome = meusWidgetsBuilder.criaEditText("nome");
 		final EditText etEmail = meusWidgetsBuilder.criaEditText("email");
 		final EditText etTelefone = meusWidgetsBuilder.criaEditText("telefone");
 		final EditText etMensagem = meusWidgetsBuilder.criaEditText("Mensagem");
-		
-		LayoutParams lp_MATCH_WRAP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);			
-		lp_MATCH_WRAP.setMargins(0, 20, 0, 0);		
 
-		Button botaoEmviarMensagem = meusWidgetsBuilder.criaBotao("Enviar Mensagem", lp_MATCH_WRAP);	
-		botaoEmviarMensagem.setOnClickListener(new View.OnClickListener() {
+		LayoutParams lp_MATCH_WRAP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);			
+					 lp_MATCH_WRAP.setMargins(0, 20, 0, 0);		
+
+		Button botaoEnviarMensagem = meusWidgetsBuilder.criaBotao("Enviar Mensagem", lp_MATCH_WRAP);	
+		botaoEnviarMensagem.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				
@@ -218,44 +271,48 @@ public class DetalheDoImovel extends Activity {
 			}
 		});
 
-		llTela.addView(llFotosHolder);
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Tipo de imóvel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getSubtipoImovel())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Tipo de oferta: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getSubTipoOferta())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Valor: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getPrecoVenda())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Dormitório(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getDormitorios())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Suíte(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getSuites())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Vaga(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getVagas())));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Área util: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getAreaUtil()+"m²")));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Área total: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getAreaTotal()+"m²")));
-		llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Data de atualização: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getDataAtualizacao())));	
-
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Nome: ", etNome));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("E-Mail: ", etEmail));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Telefone: ", etTelefone));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Mensagem: ", etMensagem));	
+		ll.addView(botaoEnviarMensagem);
 		
-		
-		
-		
-		//llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Nome: ", etNome));
-		//llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("E-Mail: ", etEmail));
-		//llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Telefone: ", etTelefone));
-		//llTela.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Mensagem: ", etMensagem));
-		//llTela.addView(botaoEmviarMensagem);
-
-		scrollViewTela.addView(llTela);
-
-		return scrollViewTela;
+		llTela.addView(ll);
 	}
+
 	
-	private void adicionaFotosNoLlFotosInternas() {
+	
+	private void adicionaLinearLayoutDescricaoImovelNaTela(){
+		
+		Reais reais = new Reais();
+		
+		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Tipo de imóvel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getSubtipoImovel())));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Tipo de oferta: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getSubTipoOferta())));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Valor: ", meusWidgetsBuilder.criaTextViewCONTEUDO(reais.desenhaReaisComPontoEvirgula(""+imovelDoSerializable.getPrecoVenda(), 2, 1))));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Dormitório(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getDormitorios())));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Suíte(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getSuites())));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Vaga(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getVagas())));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Área util: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getAreaUtil()+"m²")));
+		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Área total: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getAreaTotal()+"m²")));
+
+		llTela.addView(ll);
+
+	}
+
+	private void adicionaImagensNoLinearLayoutFotosInternas() {
 		
 		for(String urlImagem : listaComImagens) {
 			
 			ImageView imageViewFotos = new ImageView(context);
 			imageViewFotos.setAdjustViewBounds(true);
-			imageViewFotos.setImageDrawable(context.getResources().getDrawable(R.drawable.carregamento));
+			imageViewFotos.setImageDrawable(context.getResources().getDrawable(R.drawable.casa));
 			imageViewFotos.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 			
 			llFotosInternas.addView(imageViewFotos);
 	
-			imageLoader.get(urlImagem, imageLoader.getImageListener(imageViewFotos, R.drawable.carregamento, R.drawable.erro));
+			imageLoader.get(urlImagem, imageLoader.getImageListener(imageViewFotos, R.drawable.casa, R.drawable.erro));
 		}
 	}
 	
@@ -349,6 +406,17 @@ public class DetalheDoImovel extends Activity {
 		
 		MeuProgressDialog.encerraProgressDialog(progressDialog);
 
+		if(jSONObjectResposta.has("msg")) {
+			
+			try {
+				jSONObjectResposta.getString("msg");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 		new MeuAlerta("jSONObjectResposta", ""+jSONObjectResposta, context).meuAlertaOk();									
 	}
 

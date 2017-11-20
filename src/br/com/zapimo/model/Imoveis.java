@@ -13,7 +13,6 @@ public class Imoveis implements Serializable {
 	private int Vagas;
 	private int AreaUtil;
 	private double DistanciaKilometros;
-	private String DataAtualizacao;
 	private String UrlImagem;
 	private String EstagioObra;
 	private String SubTipoOferta;
@@ -38,8 +37,7 @@ public class Imoveis implements Serializable {
 	public static final String COLUMN_INTEGER_PRECOVENDA = "PrecoVenda";
 	public static final String COLUMN_TEXT_DISTANCIAKILOMETROS = "DistanciaKilometros";
 	public static final String COLUMN_TEXT_ESTAGIOOBRA = "EstagioObra";
-	public static final String COLUMN_TEXT_SUBTIPOOFERTA = "SubTipoOferta";
-	public static final String COLUMN_TEXT_DATAATUALIZACAO = "DataAtualizacao";
+	public static final String COLUMN_TEXT_SUBTIPOOFERTA = "SubTipoOferta";	
 	public static final String COLUMN_TEXT_TIPOIMOVEL = "TipoImovel";
 	public static final String COLUMN_INTEGER_AREATOTAL = "AreaTotal";
 	public static final String COLUMN_TEXT_URLIMAGEM = "UrlImagem";
@@ -100,14 +98,6 @@ public class Imoveis implements Serializable {
 
 	public void setFotos(List<String> fotos) {
 		Fotos = fotos;
-	}
-
-	public void setDataAtualizacao(String DataAtualizacao) {
-		this.DataAtualizacao = DataAtualizacao;
-	}
-
-	public String getDataAtualizacao() {
-		return DataAtualizacao;
 	}
 
 	public void setTipoImovel(String TipoImovel) {
