@@ -14,8 +14,89 @@ import br.com.zapimo.model.Endereco;
 import br.com.zapimo.model.Imoveis;
 
 public class JsonUtil {
+
+	public Object devolveObjetoDaClasseInformada(String nomeDoHolder, Class<?> classe, JSONObject jSONObjectImovel) throws Exception {
+
+		Object objectInstance = null;
 		
-	public boolean insereInformacoesDoJsonNoBancoDeDados(Context context, JSONObject jSONObjectResposta, Dao dao, Class<?> classeHOLDER) {
+			if(jSONObjectImovel.has(nomeDoHolder)){
+			
+				JSONObject jSONObjectImoveis = (JSONObject) jSONObjectImovel.get(nomeDoHolder);
+			
+				objectInstance = classe.getConstructor().newInstance();
+
+			for (Field field : classe.getDeclaredFields()) {
+
+				field.setAccessible(true);
+
+				if (!field.getName().contains("COLUMN")) {
+
+					if(jSONObjectImoveis.has(field.getName())){
+
+						
+						if(field.getType() == java.util.List.class){
+							
+							JSONArray jSONArrayy = jSONObjectImoveis.getJSONArray(field.getName());
+							
+							List<String> lista = devolveListaDeStrings(jSONArrayy);
+					
+							field.set(objectInstance, lista);
+						}
+						
+						if(field.getType() == Cliente.class) {
+							
+							JSONObject jSONObjInterno = (JSONObject) jSONObjectImoveis.get(field.getName());
+							
+							field.set(objectInstance, devolveObjetoPopulado(Cliente.class, jSONObjInterno));
+						} 
+					
+						if(field.getType() == Endereco.class) {
+		
+							JSONObject jSONObjInterno = (JSONObject) jSONObjectImoveis.get(field.getName());
+							
+							field.set(objectInstance, devolveObjetoPopulado(Endereco.class, jSONObjInterno));	
+						} 
+					
+						if(field.getType() == int.class) {
+
+							field.setInt(objectInstance, jSONObjectImoveis.getInt(field.getName()));
+						}
+					
+						if(field.getType() == String.class){
+						
+							if(jSONObjectImoveis.getString(field.getName()) == null){
+								
+								field.set(objectInstance, "nulo");
+							}	
+							else{		
+								
+								field.set(objectInstance, jSONObjectImoveis.getString(field.getName()));
+							}		
+						}
+					}			
+				}	
+			}
+			
+			}
+			
+			
+		return objectInstance;
+	}
+	
+	private List<String> devolveListaDeStrings(JSONArray jSONArray) throws Exception {
+
+		List<String> lista = new ArrayList<String>();
+
+		for (int i = 0; i < jSONArray.length(); i++) {
+
+			String string = jSONArray.getString(i);
+	
+			lista.add(string);
+		}
+		return lista;
+	}
+
+	public boolean insereInformacoesDoJsonNoBancoDeDadosQuandoHolderEhJSONArray(Context context, JSONObject jSONObjectResposta, Dao dao, Class<?> classeHOLDER) {
 		
 		boolean deuErro = false;
 		
@@ -68,36 +149,28 @@ public class JsonUtil {
 
 				if (!field.getName().contains("COLUMN")) {
 
-					if(field.getType() == Cliente.class) {
-						
-						if(jSONObject.has(field.getName())){
+					if(jSONObject.has(field.getName())){
+
+						if(field.getType() == Cliente.class) {
 							
 							JSONObject jSONObjInterno = (JSONObject) jSONObject.get(field.getName());
 							
 							field.set(objectInstance, devolveObjetoPopulado(Cliente.class, jSONObjInterno));
-						}			
-					} 
+						} 
 					
-					if(field.getType() == Endereco.class) {
-
-						if(jSONObject.has(field.getName())){
-							
+						if(field.getType() == Endereco.class) {
+		
 							JSONObject jSONObjInterno = (JSONObject) jSONObject.get(field.getName());
 							
-							field.set(objectInstance, devolveObjetoPopulado(Endereco.class, jSONObjInterno));
-						}			
-					} 
+							field.set(objectInstance, devolveObjetoPopulado(Endereco.class, jSONObjInterno));	
+						} 
 					
-					if(field.getType() == int.class) {
+						if(field.getType() == int.class) {
 
-						field.setInt(objectInstance, jSONObject.getInt(field.getName()));
-					}
+							field.setInt(objectInstance, jSONObject.getInt(field.getName()));
+						}
 					
-					if(field.getType() == String.class){
-						
-						
-						if(jSONObject.has(field.getName())){
-						
+						if(field.getType() == String.class){
 						
 							if(jSONObject.getString(field.getName()) == null){
 								
@@ -106,11 +179,9 @@ public class JsonUtil {
 							else{		
 								
 								field.set(objectInstance, jSONObject.getString(field.getName()));
-							}
-						
+							}		
 						}
-						
-					}
+					}			
 				}
 			}
 			lista.add((E) objectInstance);
@@ -118,7 +189,7 @@ public class JsonUtil {
 		return lista;
 	}
 
-	public Object devolveObjetoPopulado(Class<?> classe, JSONObject jSONObject) {
+	private Object devolveObjetoPopulado(Class<?> classe, JSONObject jSONObject) {
 
 		Object objectInstance = null;
 		try {

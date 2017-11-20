@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 	
 		JsonUtil jsonUtil = new JsonUtil();
 					
-		boolean deuErro = jsonUtil.insereInformacoesDoJsonNoBancoDeDados(context, jSONObjectResposta, dao, Imoveis.class);
+		boolean deuErro = jsonUtil.insereInformacoesDoJsonNoBancoDeDadosQuandoHolderEhJSONArray(context, jSONObjectResposta, dao, Imoveis.class);
 				
 		MeuProgressDialog.encerraProgressDialog(progressDialog);
 
