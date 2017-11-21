@@ -14,11 +14,11 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ScrollView;
 
 @SuppressLint("NewApi")
-public class MeusWidgetsBuilder {
+public class TelaBuilder {
 
 	private Context context;
 	
-	public MeusWidgetsBuilder(Context _context){
+	public TelaBuilder(Context _context){
 		this.context = _context;
 	}
 	

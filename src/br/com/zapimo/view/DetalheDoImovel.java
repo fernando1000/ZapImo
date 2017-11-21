@@ -33,9 +33,10 @@ import br.com.zapimo.util.IpURL;
 import br.com.zapimo.util.JsonUtil;
 import br.com.zapimo.util.MeuAlerta;
 import br.com.zapimo.util.MeuProgressDialog;
-import br.com.zapimo.util.MeusWidgetsBuilder;
+import br.com.zapimo.util.TelaBuilder;
 import br.com.zapimo.util.MontaJSONObjectGenerico;
-import br.com.zapimo.util.Reais;
+import br.com.zapimo.util.PercorreViews;
+import br.com.zapimo.util.Moeda;
 import br.com.zapimo.util.VolleySingleton;
 import br.com.zapimo.util.VolleyTimeout;
 
@@ -50,7 +51,7 @@ public class DetalheDoImovel extends Activity {
 	private LinearLayout llFotosInternas;
 	private Imoveis imovelDoSerializable;
 	private Imoveis imovelDoWS;
-	private MeusWidgetsBuilder meusWidgetsBuilder;
+	private TelaBuilder telaBuilder;
 	private LinearLayout llTela;
 	
 	@Override
@@ -62,7 +63,7 @@ public class DetalheDoImovel extends Activity {
 
 		context = DetalheDoImovel.this;
 						
-		meusWidgetsBuilder = new MeusWidgetsBuilder(context);
+		telaBuilder = new TelaBuilder(context);
 
 		listaComImagens = new ArrayList<String>();
 		
@@ -153,12 +154,12 @@ public class DetalheDoImovel extends Activity {
 	
 	private void adicionaLinearLayoutEnderecoNaTela(){
 		
-		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+		LinearLayout ll = telaBuilder.criaLinearLayoutcomBordaArredondada();
 		
 		Endereco endereco = imovelDoWS.getEndereco();
 		
-		ll.addView(meusWidgetsBuilder.criaTextViewTITULO("Endereço"));	
-		ll.addView(meusWidgetsBuilder.criaTextViewCONTEUDO(endereco.getLogradouro()+" "+endereco.getNumero()+" "+endereco.getComplemento()+", "+ 
+		ll.addView(telaBuilder.criaTextViewTITULO("Endereço"));	
+		ll.addView(telaBuilder.criaTextViewCONTEUDO(endereco.getLogradouro()+" "+endereco.getNumero()+" "+endereco.getComplemento()+", "+ 
 														   endereco.getBairro() +", "+
 														   endereco.getCidade() + "/"+
 														   endereco.getEstado() + " - "+
@@ -171,33 +172,33 @@ public class DetalheDoImovel extends Activity {
 
 	private void adicionaLinearLayoutClienteNaTela(){
 
-		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+		LinearLayout ll = telaBuilder.criaLinearLayoutcomBordaArredondada();
 
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Código do cliente: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoWS.getCliente().getCodCliente())));	
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Nome do Cliente: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getCliente().getNomeFantasia())));	
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Código do cliente: ", telaBuilder.criaTextViewCONTEUDO(""+imovelDoWS.getCliente().getCodCliente())));	
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Nome do Cliente: ", telaBuilder.criaTextViewCONTEUDO(imovelDoWS.getCliente().getNomeFantasia())));	
 
 		llTela.addView(ll);	
 	}
 	
 	private void adicionaLinearLayoutObservacaoNaTela(){
 
-		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+		LinearLayout ll = telaBuilder.criaLinearLayoutcomBordaArredondada();
 
-		ll.addView(meusWidgetsBuilder.criaTextViewTITULO("Observação"));	
-		ll.addView(meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoWS.getObservacao()));	
+		ll.addView(telaBuilder.criaTextViewTITULO("Observação"));	
+		ll.addView(telaBuilder.criaTextViewCONTEUDO(imovelDoWS.getObservacao()));	
 
 		llTela.addView(ll);	
 	}
 
 	private void adicionaLinearLayoutCaracteristicasNaTela(){
 
-		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+		LinearLayout ll = telaBuilder.criaLinearLayoutcomBordaArredondada();
 
-		ll.addView(meusWidgetsBuilder.criaTextViewTITULO("Caracteristicas"));	
+		ll.addView(telaBuilder.criaTextViewTITULO("Caracteristicas"));	
 
 		for(String caracteristica : imovelDoWS.getCaracteristicas()) {
 			
-			ll.addView(meusWidgetsBuilder.criaTextViewCONTEUDO("°"+caracteristica));	
+			ll.addView(telaBuilder.criaTextViewCONTEUDO("°"+caracteristica));	
 		}	
 		
 		llTela.addView(ll);			
@@ -205,13 +206,13 @@ public class DetalheDoImovel extends Activity {
 
 	private void adicionaLinearLayoutCaracteristicasComumNaTela(){
 
-		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+		LinearLayout ll = telaBuilder.criaLinearLayoutcomBordaArredondada();
 
-		ll.addView(meusWidgetsBuilder.criaTextViewTITULO("Caracteristicas comum"));	
+		ll.addView(telaBuilder.criaTextViewTITULO("Caracteristicas comum"));	
 
 		for(String caracComum : imovelDoWS.getCaracteristicasComum()) {
 			
-			ll.addView(meusWidgetsBuilder.criaTextViewCONTEUDO("°"+caracComum));	
+			ll.addView(telaBuilder.criaTextViewCONTEUDO("°"+caracComum));	
 		}
 
 		llTela.addView(ll);
@@ -219,10 +220,10 @@ public class DetalheDoImovel extends Activity {
 
 	private ScrollView devolveTela() {
 		
-		ScrollView scrollViewTela = meusWidgetsBuilder.criaScrollView();
+		ScrollView scrollViewTela = telaBuilder.criaScrollView();
 		scrollViewTela.setBackgroundColor(context.getResources().getColor(R.color.azul_claro));
 
-		llTela = meusWidgetsBuilder.criaLinearLayoutTELA();
+		llTela = telaBuilder.criaLinearLayoutTELA();
 		
 		LinearLayout llFotosHolder = new LinearLayout(context);
 		llFotosHolder.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 700));
@@ -252,17 +253,17 @@ public class DetalheDoImovel extends Activity {
 
 	private void adicionaLinearLayoutMensagemNaTela(){
 				
-		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+		LinearLayout ll = telaBuilder.criaLinearLayoutcomBordaArredondada();
 
-		final EditText etNome = meusWidgetsBuilder.criaEditText("nome");
-		final EditText etEmail = meusWidgetsBuilder.criaEditText("email");
-		final EditText etTelefone = meusWidgetsBuilder.criaEditText("telefone");
-		final EditText etMensagem = meusWidgetsBuilder.criaEditText("Mensagem");
+		final EditText etNome = telaBuilder.criaEditText("nome");
+		final EditText etEmail = telaBuilder.criaEditText("email");
+		final EditText etTelefone = telaBuilder.criaEditText("telefone");
+		final EditText etMensagem = telaBuilder.criaEditText("Mensagem");
 
 		LayoutParams lp_MATCH_WRAP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);			
 					 lp_MATCH_WRAP.setMargins(0, 20, 0, 0);		
 
-		Button botaoEnviarMensagem = meusWidgetsBuilder.criaBotao("Enviar Mensagem", lp_MATCH_WRAP);	
+		Button botaoEnviarMensagem = telaBuilder.criaBotao("Enviar Mensagem", lp_MATCH_WRAP);	
 		botaoEnviarMensagem.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -271,31 +272,29 @@ public class DetalheDoImovel extends Activity {
 			}
 		});
 
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Nome: ", etNome));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("E-Mail: ", etEmail));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Telefone: ", etTelefone));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHAet("Mensagem: ", etMensagem));	
+		ll.addView(telaBuilder.criaLinearLayoutLINHAet("Nome: ", etNome));
+		ll.addView(telaBuilder.criaLinearLayoutLINHAet("E-Mail: ", etEmail));
+		ll.addView(telaBuilder.criaLinearLayoutLINHAet("Telefone: ", etTelefone));
+		ll.addView(telaBuilder.criaLinearLayoutLINHAet("Mensagem: ", etMensagem));	
 		ll.addView(botaoEnviarMensagem);
 		
 		llTela.addView(ll);
 	}
 
-	
-	
 	private void adicionaLinearLayoutDescricaoImovelNaTela(){
 		
-		Reais reais = new Reais();
+		Moeda reais = new Moeda();
 		
-		LinearLayout ll = meusWidgetsBuilder.criaLinearLayoutcomBordaArredondada();
+		LinearLayout ll = telaBuilder.criaLinearLayoutcomBordaArredondada();
 
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Tipo de imóvel: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getSubtipoImovel())));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Tipo de oferta: ", meusWidgetsBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getSubTipoOferta())));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Valor: ", meusWidgetsBuilder.criaTextViewCONTEUDO(reais.desenhaReaisComPontoEvirgula(""+imovelDoSerializable.getPrecoVenda(), 2, 1))));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Dormitório(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getDormitorios())));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Suíte(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getSuites())));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Vaga(s): ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getVagas())));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Área util: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getAreaUtil()+"m²")));
-		ll.addView(meusWidgetsBuilder.criaLinearLayoutLINHA("Área total: ", meusWidgetsBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getAreaTotal()+"m²")));
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Tipo de imóvel: ", telaBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getSubtipoImovel())));
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Tipo de oferta: ", telaBuilder.criaTextViewCONTEUDO(imovelDoSerializable.getSubTipoOferta())));
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Valor: ", telaBuilder.criaTextViewCONTEUDO(reais.desenhaReaisComPontoEvirgula(""+imovelDoSerializable.getPrecoVenda(), 2, 1))));
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Dormitório(s): ", telaBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getDormitorios())));
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Suíte(s): ", telaBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getSuites())));
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Vaga(s): ", telaBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getVagas())));
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Área util: ", telaBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getAreaUtil()+"m²")));
+		ll.addView(telaBuilder.criaLinearLayoutLINHA("Área total: ", telaBuilder.criaTextViewCONTEUDO(""+imovelDoSerializable.getAreaTotal()+"m²")));
 
 		llTela.addView(ll);
 
@@ -318,7 +317,9 @@ public class DetalheDoImovel extends Activity {
 	
 	private void acaoAposClique(int codImovel, EditText etNome, EditText etEmail, EditText etTelefone, EditText etMensagem){
 	
-		if(faltaPreencherEditText(llTela)){
+		PercorreViews percorreViews = new PercorreViews();
+		
+		if(percorreViews.faltaPreencherEditText(llTela)){
 		
 			new MeuAlerta("Atenção", "Favor preencher todos os campos", context).meuAlertaOk();
 		}
@@ -334,38 +335,6 @@ public class DetalheDoImovel extends Activity {
 		}
 	}
 	
-	public boolean faltaPreencherEditText(LinearLayout llTela) {
-
-		boolean temVazio = false;
-
-		for (int i = 0; i < llTela.getChildCount(); i++) {
-
-			Object child = (Object) llTela.getChildAt(i);
-
-			if (child instanceof LinearLayout) {
-
-				LinearLayout linearLayoutChild = (LinearLayout) child;
-
-				for (int x = 0; x < linearLayoutChild.getChildCount(); x++) {
-
-					View view = (View) linearLayoutChild.getChildAt(x);
-
-					if (view instanceof EditText) {
-
-						EditText editTextChild = (EditText) view;
-
-						if(editTextChild.getText().toString().isEmpty() ){
-						
-							temVazio = true;
-							break;
-						}	
-					}
-				}
-			}
-		}
-		return temVazio;
-	}
-
 	private void enviaMensagemWS(Contato contato) {
 	    
 	    final ProgressDialog progressDialog = MeuProgressDialog.criaProgressDialog(context, "Enviando mensagem...");
@@ -406,18 +375,23 @@ public class DetalheDoImovel extends Activity {
 		
 		MeuProgressDialog.encerraProgressDialog(progressDialog);
 
-		if(jSONObjectResposta.has("msg")) {
+		try {
+			if(jSONObjectResposta.has("msg")) {
 			
-			try {
-				jSONObjectResposta.getString("msg");
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				String respostaDoPOST = jSONObjectResposta.getString("msg");
+				
+				if(respostaDoPOST.equalsIgnoreCase("ok")){
+					
+					new MeuAlerta("Aviso", "Mensagem enviada com sucesso!", context).meuAlertaOk();									
+				}else {
+					new MeuAlerta("Erro", "Erro no envio dos dados, favor tentar novamente", context).meuAlertaOk();									
+				}			
 			}
-			
-		}
+		} 
+		catch (JSONException jSONException) {
 		
-		new MeuAlerta("jSONObjectResposta", ""+jSONObjectResposta, context).meuAlertaOk();									
+			new MeuAlerta("Erro", ""+jSONException, context).meuAlertaOk();													
+		}
 	}
 
 

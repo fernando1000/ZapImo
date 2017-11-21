@@ -29,25 +29,5 @@ public class MeuAlerta {
 		   	   });
 		builder.show();
 	}
-	
-	public void meuAlertaSimNao(final AcaoAlertDialog acaoAlertDialog){
 		
-		AlertDialog.Builder builder = new AlertDialog.Builder(context, 1);
-		builder.setTitle(titulo)
-			   .setMessage(conteudo)
-			   .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						
-						acaoAlertDialog.fazAcaoSIM(context);	
-					}
-				})
-			   .setNegativeButton("Não", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						
-						acaoAlertDialog.fazAcaoNAO(context);			
-					}
-				});		
-		builder.show();
-	}
-	
 }
