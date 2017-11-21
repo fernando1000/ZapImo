@@ -11,13 +11,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.util.LruCache;
+import android.text.InputType;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -40,6 +46,7 @@ import br.com.zapimo.util.Moeda;
 import br.com.zapimo.util.VolleySingleton;
 import br.com.zapimo.util.VolleyTimeout;
 
+@SuppressLint("NewApi")
 public class DetalheDoImovel extends Activity {
 
 	private static final String RESOURCE_DETALHE_ITEM = "/imoveis/";	
@@ -58,6 +65,11 @@ public class DetalheDoImovel extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getString(R.color.azul))));
+
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 	    Bundle bundle = getIntent().getExtras();
 	    imovelDoSerializable = (Imoveis) bundle.getSerializable("Imoveis");
 
@@ -255,11 +267,18 @@ public class DetalheDoImovel extends Activity {
 				
 		LinearLayout ll = telaBuilder.criaLinearLayoutcomBordaArredondada();
 
-		final EditText etNome = telaBuilder.criaEditText("nome");
-		final EditText etEmail = telaBuilder.criaEditText("email");
-		final EditText etTelefone = telaBuilder.criaEditText("telefone");
-		final EditText etMensagem = telaBuilder.criaEditText("Mensagem");
+		final EditText etNome = telaBuilder.criaEditText("");
+		   			   etNome.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+			
+		final EditText etEmail = telaBuilder.criaEditText("");
+		   			   etEmail.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+			
+		final EditText etTelefone = telaBuilder.criaEditText("");
+		   			   etTelefone.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_CLASS_PHONE);
 
+		final EditText etMensagem = telaBuilder.criaEditText("");
+		   			   etMensagem.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+			
 		LayoutParams lp_MATCH_WRAP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);			
 					 lp_MATCH_WRAP.setMargins(0, 20, 0, 0);		
 
@@ -382,7 +401,9 @@ public class DetalheDoImovel extends Activity {
 				
 				if(respostaDoPOST.equalsIgnoreCase("ok")){
 					
-					new MeuAlerta("Aviso", "Mensagem enviada com sucesso!", context).meuAlertaOk();									
+					new MeuAlerta("Aviso", "Mensagem enviada com sucesso!", context).meuAlertaOk();		
+					
+					new PercorreViews().limpaTodosEditText(llTela);
 				}else {
 					new MeuAlerta("Erro", "Erro no envio dos dados, favor tentar novamente", context).meuAlertaOk();									
 				}			

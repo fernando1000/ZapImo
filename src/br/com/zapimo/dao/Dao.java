@@ -88,19 +88,6 @@ public class Dao extends BancoSQLiteOpenHelper {
 		sQLiteDatabase.close();
 	}
 
-	public void deletaObjeto(Class<?> classe, Object... parametros) {
-
-		String delete = "delete from " + classe.getSimpleName();
-		
-		String condicaoWhere = Query.criaCondicaoWhereComParametrosString(parametros);
-		
-		String queryDelete = delete + condicaoWhere;
-		
-		SQLiteDatabase sQLiteDatabase = this.getWritableDatabase();
-		sQLiteDatabase.execSQL(queryDelete);
-		sQLiteDatabase.close();
-	}
-
 	private Object devolveObjetoBaseadoEmSQL_final(Class<?> classe, String querySelect) {
 
 		SQLiteDatabase sQLiteDatabase = this.getReadableDatabase();
@@ -140,45 +127,5 @@ public class Dao extends BancoSQLiteOpenHelper {
 		return (List<T>) lista;
 	}
 	
-	public int selectCount(Class<?> classe, Object... parametros){
-
-		String select = "SELECT count(*) FROM " + classe.getSimpleName();
-
-		String condicaoWhere = Query.criaCondicaoWhereComParametrosString(parametros);
-
-		String querySelect = select + condicaoWhere;
-
-		return devolveQtdEncontrada(querySelect);
-	}
-
-	public int selectSum(Class<?> classe, String colunaAserSomada, Object... parametros){
-
-		String select = "SELECT sum("+colunaAserSomada+") FROM " + classe.getSimpleName(); 
-		
-		String condicaoWhere = Query.criaCondicaoWhereComParametrosString(parametros);
-
-		String querySelect = select + condicaoWhere;
-
-		return devolveQtdEncontrada(querySelect);
-	}
-		
-	private int devolveQtdEncontrada(String sql){
-
-		int qtd = 0;
-
-		SQLiteDatabase sQLiteDatabase = this.getReadableDatabase();
-
-		Cursor cursor = sQLiteDatabase.rawQuery(sql, null);
-
-		if (cursor.moveToFirst()) {
-
-			qtd = cursor.getInt(0);
-		}
-		cursor.close();
-		sQLiteDatabase.close();
-
-		return qtd;
-	}
-
 
 }
